@@ -1,5 +1,5 @@
 {
-    "name": "gentor/etsy-php-laravel",
+    "name": "booni3/laravel-etsy",
     "description": "Etsy php wrapper for Laravel",
     "license": "MIT",
     "authors": [
