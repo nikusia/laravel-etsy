@@ -367,15 +367,27 @@ class EtsyApi
             }
         }
 
-        try {
-            $response = $this->client->request($method, $url, $options);
-        } catch (BadResponseException $e) {
-            $response = $e->getResponse();
-            $body = $response->getBody();
-            $statusCode = $response->getStatusCode();
+        $retry_count = 0;
+        do{
+            try {
+                $retry = null;
+                $retry_count++;
+                $response = $this->client->request($method, $url, $options);
+            } catch (BadResponseException $e) {
+                $response = $e->getResponse();
+                $body = $response->getBody();
+                $statusCode = $response->getStatusCode();
 
-            throw new EtsyResponseException("Received error [$body] with status code [$statusCode]", $response);
-        }
+                if($response->getBody() == 'You have exceeded your quota of: 10 requests per 1 second(s) per user for authorized requests.'){
+                    if($retry_count > 5)
+                        throw new EtsyResponseException("Retry has been attempted too many times with error [$body] with status code [$statusCode]", $response);
+                    $retry = true;
+                    sleep(2);
+                } else {
+                    throw new EtsyResponseException("Received error [$body] with status code [$statusCode]", $response);
+                }
+            }
+        } while($retry);
 
         return json_decode((string)$response->getBody(), true);
     }
