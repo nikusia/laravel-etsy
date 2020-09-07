@@ -11,7 +11,7 @@
     "require": {
         "league/oauth1-client": "^1.7",
         "gentor/oauth1-etsy": "^1.0.3",
-        "illuminate/session": "^5.3 | ^6.0"
+        "illuminate/session": "^6.2 | ^7.2"
     },
     "autoload": {
         "psr-4": {
